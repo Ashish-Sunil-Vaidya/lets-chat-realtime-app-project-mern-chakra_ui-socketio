@@ -28,12 +28,12 @@ const SingleChatMessage = () => {
       {selectedChat && (
         <Flex justify="space-between" p={3} bgColor="gray.50">
           <Heading fontSize="1.8rem" textColor="blue.500">
-            {selectedChat && getSender(user, selectedChat?.users)}
+            {selectedChat && getSender(user, selectedChat.users)}
           </Heading>
           <HStack gap={3}>
             <ProfileModal
               userInfo={
-                selectedChat && getSenderFull(user, selectedChat?.users)
+                selectedChat && getSenderFull(user, selectedChat.users)
               }
               buttonChildren={<FaCircleInfo size="25px" />}
               style={{

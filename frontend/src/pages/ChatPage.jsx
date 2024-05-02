@@ -22,7 +22,6 @@ import { useState } from "react";
 
 const ChatPage = () => {
   const { user } = useChatContext();
-  const [fetchAgain, setFetchAgain] = useState(false);
 
   return (
     <Flex
@@ -34,22 +33,20 @@ const ChatPage = () => {
     >
       <Flex flex={1} w="100%" p={3} align="center" justify="space-between">
         <Flex gap={3}>
-          <FindUsersDrawer setFetchAgain={setFetchAgain}/>
-          <CreateGroupDrawer setFetchAgain={setFetchAgain}/>
+          <FindUsersDrawer />
+          <CreateGroupDrawer />
         </Flex>
         <Flex px={3}>
           <Flex align="center" gap={3}>
             <Menu>
               <MenuButton as={Button} variant="ghost" colorScheme="blue" px={2}>
                 <Flex align="center" gap={2}>
-                  <Avatar name={user?.username} src={user?.profilePic}  />
+                  <Avatar name={user?.username} src={user?.profilePic} />
                   <ChevronDownIcon />
                 </Flex>
               </MenuButton>
               <MenuList p={2} display="grid" gap={2}>
-                <ProfileModal 
-                  userInfo={user}
-                />
+                <ProfileModal userInfo={user} />
                 <LogoutButton />
               </MenuList>
             </Menu>
@@ -62,8 +59,8 @@ const ChatPage = () => {
         overflow="hidden"
         templateColumns="minmax(350px,auto) 1fr"
       >
-        <UserChats fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-        <MessageBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+        <UserChats />
+        <MessageBox />
       </Grid>
     </Flex>
   );

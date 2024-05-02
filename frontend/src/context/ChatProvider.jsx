@@ -3,19 +3,19 @@ import { useNavigate } from "react-router-dom";
 
 export const ChatContext = createContext();
 const ChatProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("userDetails"))
+  );
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
+  const [fetchAgain, setFetchAgain] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("userDetails"));
-    setUser(user);
     if (user) {
       navigate("/chats");
     }
   }, [navigate]);
-  
 
   return (
     <ChatContext.Provider
@@ -26,6 +26,8 @@ const ChatProvider = ({ children }) => {
         setChats,
         selectedChat,
         setSelectedChat,
+        fetchAgain,
+        setFetchAgain,
       }}
     >
       {children}

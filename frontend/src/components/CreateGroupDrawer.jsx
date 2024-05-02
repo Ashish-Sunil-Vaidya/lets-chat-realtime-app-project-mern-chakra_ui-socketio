@@ -26,7 +26,7 @@ import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 
 const CreateGroupDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user, setChats } = useChatContext();
+  const { user, setChats, fetchAgain, setFetchAgain } = useChatContext();
   const [groupChatName, setGroupChatName] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -80,7 +80,7 @@ const CreateGroupDrawer = () => {
           title: "Group Chat created successfully",
           status: "success",
         });
-        //setFetchAgain(true);
+        setFetchAgain(!fetchAgain);
         onClose();
       })
       .catch((err) => {
@@ -95,7 +95,6 @@ const CreateGroupDrawer = () => {
       })
       .finally(() => {
         setLoading(false);
-        //setFetchAgain(false);
       });
   };
 

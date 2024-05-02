@@ -8,6 +8,6 @@ router.post('/', protect, accessChat)
 router.post('/group', protect, createGroupChat)
 router.put('/renameGroupChat', protect, renameGroupChat)
 router.put('/addToGroupChat', protect, addToGroupChat)
-router.delete('/removeFromGroupChat', protect, removefromGroupChat)
+router.put('/removeFromGroupChat', protect, removefromGroupChat)
 
 module.exports = router
