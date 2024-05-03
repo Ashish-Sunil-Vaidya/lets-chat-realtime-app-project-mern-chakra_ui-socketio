@@ -3,7 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const userRouter = require("./routes/userRoutes.js");
-const chatRouter = require("./routes/chatRoutes.js")
+const chatRouter = require("./routes/chatRoutes.js");
+const messageRouter = require("./routes/messageRoutes.js");
 const { notFound, errorHandler } = require("./middlewares/APIErrors.js");
 
 config();
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/api/user', userRouter);
 app.use('/api/chats', chatRouter)
+app.use('/api/messages', messageRouter)
 
 // In Api testing throws custom url not found message 
 app.use(notFound);
