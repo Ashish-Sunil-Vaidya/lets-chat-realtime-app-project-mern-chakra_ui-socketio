@@ -1,6 +1,7 @@
 const { verify } = require('jsonwebtoken');
 const User = require("../models/userModel");
 
+// This function is used to protect the routes that require authentication before accessing them
 const protect = async (req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         try {

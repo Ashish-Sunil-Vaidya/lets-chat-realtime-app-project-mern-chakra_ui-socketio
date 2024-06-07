@@ -17,6 +17,7 @@ import {
   Skeleton,
   VStack,
   Grid,
+  IconButton,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { AddIcon, SearchIcon } from "@chakra-ui/icons";
@@ -25,7 +26,7 @@ import useChatContext from "../hooks/useChatContext";
 import InputField from "./InputField";
 import UserListItem from "./UserListItem";
 
-const FindUsersDrawer = () => {
+const AddUsersDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -39,7 +40,7 @@ const FindUsersDrawer = () => {
     await axios
       .get(`/api/user?search=${search}`, {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       })
       .then((res) => {
@@ -65,7 +66,7 @@ const FindUsersDrawer = () => {
     const config = {
       headers: {
         "Content-type": "application/json",
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${user?.token}`,
       },
     };
 
@@ -95,14 +96,12 @@ const FindUsersDrawer = () => {
 
   return (
     <>
-      <Button
-        leftIcon={<AddIcon />}
+      <IconButton
+        icon={<AddIcon />}
         colorScheme="blue"
-        variant="ghost"
+        variant="outline"
         onClick={onOpen}
-      >
-        New Chat
-      </Button>
+      />
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
@@ -173,4 +172,4 @@ const FindUsersDrawer = () => {
   );
 };
 
-export default FindUsersDrawer;
+export default AddUsersDrawer;

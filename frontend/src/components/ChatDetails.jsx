@@ -2,6 +2,7 @@
 
 import { Box, Text, HStack, Avatar } from "@chakra-ui/react";
 import { getSenderFull, getSender } from "../config/ChatLogics";
+import { useColorModeValue } from "@chakra-ui/react";
 
 export function ChatDetails({
   setSelectedChat,
@@ -9,14 +10,28 @@ export function ChatDetails({
   selectedChat,
   loggedInUser,
 }) {
+  const chatDetailsBG = useColorModeValue(
+    selectedChat?._id === chat._id ? "blue.500" : null,
+    selectedChat?._id === chat._id ? "blue.900" : null
+  );
+
+  const fontColor = selectedChat?._id === chat._id ? "white" : "blue.500";
+
   return (
     <Box
       w="100%"
       key={chat._id}
       p={3}
-      borderRadius="md"
       onClick={() => setSelectedChat(chat)}
-      bg={selectedChat?._id === chat._id ? "blue.100" : "gray.50"} // color={selectedChat === chat._id ? "white" : "black"}
+      bg={{ base: "transperant", md: chatDetailsBG }} // color={selectedChat === chat._id ? "white" : "black"}
+      color={fontColor}
+      borderBottomWidth="1px"
+      sx={{
+        borderRadius: {
+          base: "none",
+          md: "md",
+        },
+      }}
     >
       <HStack>
         <Avatar
@@ -28,8 +43,9 @@ export function ChatDetails({
           src={
             !chat.isGroupChat
               ? getSenderFull(loggedInUser, chat.users).profilePic
-              : null
+              : chat.groupChatProfilePic
           }
+          boxShadow="outline"
         />
         <Box>
           <Text fontWeight="bold">
@@ -40,11 +56,10 @@ export function ChatDetails({
           <Text
             fontSize="sm" // color={selectedChat === chat._id ? "white" : "gray.500"}
           >
-            {chat.createdAt}
+            {chat.latestMessage?.content}
           </Text>
         </Box>
       </HStack>
-      <Text>{chat.latestMessage}</Text>
     </Box>
   );
 }

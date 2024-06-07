@@ -3,6 +3,13 @@ const User = require("../models/userModel.js");
 const generateToken = require("../config/generateToken.js");
 const asyncHandler = require("express-async-handler");
 
+// function name: loginUser
+// Task: To login a user
+// Parameters: req, res
+// Method: POST
+// Route: /api/users/login
+// Access: Public
+// Returns: Token and user details
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
@@ -34,6 +41,13 @@ const loginUser = asyncHandler(async (req, res) => {
 
 });
 
+// function name: registerUser
+// Task: To register a user
+// Parameters: req, res
+// Method: POST
+// Route: /api/users/signup
+// Access: Public
+// Returns: Token and user details
 const registerUser = asyncHandler(async (req, res) => {
     const { username, email, password, confirmPassword, avatarUrl } = req.body;
     if (!username || !email || !password || !confirmPassword) {
@@ -79,6 +93,13 @@ const registerUser = asyncHandler(async (req, res) => {
 
 });
 
+// function name: getAllUsers
+// Task: To get all users
+// Parameters: req, res
+// Method: GET
+// Route: /api/users
+// Access: Private (JWT required)
+// Returns: Array of User Model Objects
 const getAllUsers = asyncHandler(async (req, res) => {
 
     if (!req.query.search) {

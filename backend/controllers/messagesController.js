@@ -4,6 +4,13 @@ const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 const Chat = require("../models/chatModel");
 
+// function name: sendMessage
+// Task: To send a message in a chat
+// Parameters: req, res
+// Method: POST
+// Route: /api/chat/sendMessage
+// Access: Private (JWT required)
+// Returns: Message Model Object
 const sendMessage = asyncHandler(async (req, res) => {
     const { chatId, messageContent } = req.body;
     if (!chatId || !messageContent) {
@@ -19,14 +26,14 @@ const sendMessage = asyncHandler(async (req, res) => {
 
     await Message.create(newMessage)
         .then(async (result) => {
-            result = await result.populate("sender", "name pic").execPopulate();
-            result = await result.populate("chat").execPopulate();
+            result = await result.populate("sender", "username profilePic")
+            result = await result.populate("chat")
             result = await User.populate(result, {
                 path: "chat.users",
-                select: "name pic email",
+                select: "username profilePic email",
             });
             await Chat.findByIdAndUpdate(chatId, {
-                latestMessage: result._id,
+                latestMessage: result,
             });
             res.status(200).json(result);
         })
@@ -36,3 +43,31 @@ const sendMessage = asyncHandler(async (req, res) => {
         });
 }
 );
+
+// function name: getAllMessages
+// Task: To get all the messages in a chat
+// Parameters: req, res
+// Method: GET
+// Route: /api/chat/:chatId
+// Access: Private (JWT required)
+// Returns: Array of Message Model Objects
+const getAllMessages = asyncHandler(async (req, res) => {
+    const chatId = req.params.chatId;
+    if (!chatId) {
+        res.status(400);
+        throw new Error("ChatId not sent with the request");
+    }
+
+    await Message.find({ chat: chatId })
+        .populate("sender", "username profilePic email")
+        .populate("chat")
+        .then((result) => {
+            res.status(200).json(result);
+        })
+        .catch((error) => {
+            res.status(400);
+            throw new Error(error.message);
+        });
+});
+
+module.exports = { sendMessage, getAllMessages };

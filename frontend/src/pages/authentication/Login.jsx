@@ -3,17 +3,20 @@ import InputField from "../../components/InputField";
 import { useState } from "react";
 import useLogin from "../../hooks/useLogin";
 import { useNavigate } from "react-router-dom";
+import useChatContext from "../../hooks/useChatContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, loading } = useLogin();
   const navigate = useNavigate();
+  const {setUser} = useChatContext();
 
   const handleLogin = async () => {
     const response = await login(email, password);
     if (response) {
       localStorage.setItem("userDetails", JSON.stringify(response));
+      setUser(response);
       navigate("/chats");
     }
   };

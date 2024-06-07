@@ -28,6 +28,7 @@ const ProfileModal = ({
   groupChatName,
   groupMembers,
   groupAdmin,
+  groupChatProfilePic
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useChatContext();
@@ -53,9 +54,10 @@ const ProfileModal = ({
               <Flex direction="column" align="center" gap={3}>
                 <Avatar
                   name={!isGroupChat ? userInfo?.username : groupChatName}
-                  src={!isGroupChat ? userInfo?.profilePic : null}
+                  src={!isGroupChat ? userInfo?.profilePic : groupChatProfilePic}
                   size="2xl"
                   boxSize="200px"
+                  boxShadow="outline"
                 />
                 <VStack>
                   <Heading fontSize="2xl">

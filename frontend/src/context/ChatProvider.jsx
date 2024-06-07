@@ -9,13 +9,15 @@ const ChatProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [fetchAgain, setFetchAgain] = useState(false);
+  const [notifications, setNotifications] = useState([]); 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
+      console.log('=== user ChatProvider.jsx [16] ===', user);
       navigate("/chats");
     }
-  }, [navigate]);
+  }, []);
 
   return (
     <ChatContext.Provider
@@ -28,6 +30,8 @@ const ChatProvider = ({ children }) => {
         setSelectedChat,
         fetchAgain,
         setFetchAgain,
+        notifications,
+        setNotifications,
       }}
     >
       {children}

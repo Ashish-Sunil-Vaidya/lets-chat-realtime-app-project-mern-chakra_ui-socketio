@@ -22,10 +22,11 @@ const InputField = ({
   const [show, setShow] = useState(false);
 
   return (
-    <FormControl isRequired={isRequired}>
-      <FormLabel m={1}>{label}</FormLabel>
+    <FormControl isRequired={isRequired} w="100%">
+      {label && <FormLabel m={1}>{label}</FormLabel>}
       <InputGroup>
         <Input
+          w="100%"
           type={type === "password" ? (show ? "text" : "password") : type}
           placeholder={placeholder}
           value={value}

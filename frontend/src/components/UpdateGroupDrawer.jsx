@@ -30,8 +30,9 @@ import { useState } from "react";
 import InputField from "./InputField";
 import axios from "axios";
 import { AddIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
+import { useColorModeValue } from "@chakra-ui/react";
 
-const UpdateGroupDrawer = ({ groupChatName, groupMembers }) => {
+const UpdateGroupDrawer = ({ groupChatName, groupMembers,groupChatProfilePic }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain } =
     useChatContext();
@@ -41,6 +42,7 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const toast = useToast();
+  const selectedUserBG = useColorModeValue("blue.50", "gray.600");
 
   const handleSearch = async () => {
     if (toast.isActive("search-toast")) {
@@ -50,7 +52,7 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers }) => {
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       };
       const { data } = await axios.get(`/api/user/?search=${search}`, config);
@@ -73,7 +75,7 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers }) => {
     }
     const config = {
       headers: {
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${user?.token}`,
       },
     };
 
@@ -106,7 +108,7 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers }) => {
   const handleRemove = async (mem) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${user?.token}`,
       },
     };
 
@@ -143,7 +145,7 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers }) => {
     }
     const config = {
       headers: {
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${user?.token}`,
       },
     };
 
@@ -239,12 +241,12 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers }) => {
                         align="center"
                         w="100%"
                         rounded="md"
-                        bg="blue.50"
+                        bg={selectedUserBG}
                       >
                         <Flex align="center" gap={3}>
                           <Avatar
                             name={mem.username}
-                            src={mem.avatar}
+                            src={mem.profilePic}
                             size="sm"
                           />
                           <Text>{mem.username}</Text>

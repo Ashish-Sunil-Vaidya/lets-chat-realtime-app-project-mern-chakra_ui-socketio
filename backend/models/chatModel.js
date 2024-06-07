@@ -1,4 +1,4 @@
-const { Schema,model } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const chatSchema = new Schema({
     chatName: {
@@ -9,6 +9,10 @@ const chatSchema = new Schema({
     isGroupChat: {
         type: Boolean,
         default: false
+    },
+    groupChatProfilePic: {
+        type: String,
+        default: ''
     },
     users: [{
         type: Schema.Types.ObjectId,

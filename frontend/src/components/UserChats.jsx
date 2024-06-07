@@ -7,12 +7,18 @@ import {
   VStack,
   HStack,
   Avatar,
+  Button,
+  Flex,
 } from "@chakra-ui/react";
 import InputField from "./InputField";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import useChatContext from "../hooks/useChatContext";
+import { useColorModeValue } from "@chakra-ui/react";
+import SearchChats from "./SearchChats";
+import AddUsersDrawer from "./AddUsersDrawer";
+import CreateGroupDrawer from "./CreateGroupDrawer";
 
 const UserChats = () => {
   const { user, chats, setChats, selectedChat, setSelectedChat, fetchAgain } =
@@ -20,11 +26,14 @@ const UserChats = () => {
   const [isLoading, setLoading] = useState(true);
   const toast = useToast();
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const userChatsBG = useColorModeValue("white", "gray.800");
+  const featuresBG = useColorModeValue("gray.50", "gray.700");
+  const sectionBorderColor = useColorModeValue("gray.200", "gray.600");
 
   const fetchChats = async () => {
     const config = {
       headers: {
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${user?.token}`,
       },
     };
     await axios
@@ -48,18 +57,34 @@ const UserChats = () => {
   useEffect(() => {
     setLoggedInUser(JSON.parse(localStorage.getItem("userDetails")));
     fetchChats();
-    console.log('===  UserChats.jsx [51] ===', );
+    // console.log('===  UserChats.jsx [51] ===', chats);
   }, [fetchAgain]);
 
+
+
   return (
-    <Grid px={3} templateRows="auto 1fr" gap={3} h="100%" overflowY="auto">
-      <InputField
-        type="text"
-        placeholder="Search for chats"
-        isRequired={false}
-      />
+    <Grid
+      templateRows={{ base: "1fr auto", md: "auto 1fr auto" }}
+      overflow="hidden"
+      bgColor={userChatsBG}
+      borderRightWidth={{ base: "none", md: "2px" }}
+      borderColor={sectionBorderColor}
+    >
+      <Box p={3} display={{ base: "none", md: "block" }}>
+        <Box borderRadius="md" bgColor={featuresBG}>
+          <SearchChats />
+        </Box>
+      </Box>
       {!isLoading && chats ? (
-        <VStack gap={3} pb={3}>
+        <VStack
+          px={3}
+          overflowY="auto"
+          sx={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            "&::-webkit-scrollbar": { width: 0, height: 0 },
+          }}
+        >
           {/* {console.log("=== chats UserChats.jsx [57] ===", chats)} */}
           {chats &&
             chats.map((chat) => (
@@ -73,12 +98,16 @@ const UserChats = () => {
             ))}
         </VStack>
       ) : (
-        <Grid gap={3} h="100%">
+        <Grid gap={3} h="100%" p={3}>
           {[...Array(8)].map((_, i) => (
             <Skeleton key={i} rounded="md" />
           ))}
         </Grid>
       )}
+      <Flex p={3} gap={3} bgColor={featuresBG} borderTopWidth="2px">
+        <AddUsersDrawer />
+        <CreateGroupDrawer />
+      </Flex>
     </Grid>
   );
 };
