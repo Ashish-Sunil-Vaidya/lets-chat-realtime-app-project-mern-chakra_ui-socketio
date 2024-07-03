@@ -61,7 +61,7 @@ const server = app.listen(process.env.PORT, () => {
 const io = new Server(server, {
     pingTimeout: 60000,
     cors: {
-        origin: ['http://localhost:5173', 'https://q36lj4lq-5173.inc1.devtunnels.ms'],
+        origin: 'http://localhost:5000'//for production
     }
 });
 
