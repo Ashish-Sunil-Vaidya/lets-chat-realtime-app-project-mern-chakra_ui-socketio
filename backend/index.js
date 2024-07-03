@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import userRouter from "./routes/userRoutes.js";
 import chatRouter from "./routes/chatRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
-import { notFound, errorHandler } from "./middlewares/APIErrors.js";
+import { notFound, errorHandler } from "./middlewares/apiErrors.js";
 import path from 'path';
 import { Server } from 'socket.io';
 import { fileURLToPath } from "url";
