@@ -4,12 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "yarn frontend build && yarn backend build",
     "frontend": "cd frontend && yarn",
     "backend": "cd backend && yarn",
     "dev": "concurrently \"yarn backend dev\" \"yarn frontend dev\"",
     "install": "yarn frontend && yarn backend",
-    "start": "yarn frontend build && yarn backend start"
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "build": "npm install --legacy-peer-deps && npm install --legacy-peer-deps --prefix frontend && npm run build --prefix frontend"
   },
   "devDependencies": {
     "concurrently": "8.2.2"
