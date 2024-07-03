@@ -64,7 +64,6 @@ const UserChats = () => {
       .get("/api/chats", config)
       .then((res) => {
         setChats(res.data);
-        console.log('=== res.data UserChats.jsx [67] ===', res.data);
       })
       .catch((err) => {
         if (toast.isActive("toast")) {

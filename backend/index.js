@@ -61,7 +61,7 @@ const server = app.listen(process.env.PORT, () => {
 const io = new Server(server, {
     pingTimeout: 60000,
     cors: {
-        origin: 'https://lets-chat-a-minimalist-real-time-chat-app.onrender.com'//for production
+        origin: 'http://localhost:5173'
     }
 });
 
