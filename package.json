@@ -4,11 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "build": "yarn frontend build && yarn backend build",
     "frontend": "cd frontend && yarn",
     "backend": "cd backend && yarn",
     "dev": "concurrently \"yarn backend dev\" \"yarn frontend dev\"",
     "install": "yarn frontend && yarn backend",
-    "prod": "yarn frontend build && yarn backend start"
+    "start": "yarn frontend build && yarn backend start"
   },
   "devDependencies": {
     "concurrently": "8.2.2"
