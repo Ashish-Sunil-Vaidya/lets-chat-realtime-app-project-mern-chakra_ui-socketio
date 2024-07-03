@@ -1,7 +1,8 @@
-const { Router } = require("express");
+import { Router } from "express";
+import { loginUser, registerUser, getAllUsers, updateUser } from "../controllers/userController.js";
+import {protect} from "../middlewares/auth.js";
+
 const router = Router();
-const { loginUser, registerUser, getAllUsers } = require("../controllers/userController.js");
-const protect = require("../middlewares/auth.js");
 
 // This route is used to login a user
 router.post("/login", loginUser);
@@ -10,6 +11,9 @@ router.post("/login", loginUser);
 router.post("/signup", registerUser);
 
 // This route is used to get all the users
-router.get("/", protect, getAllUsers)
+router.get("/", protect, getAllUsers);
 
-module.exports = router;
+// This route is used to update the profile picture of a user
+router.put("/updateUser", protect, updateUser);
+
+export default router;

@@ -76,7 +76,7 @@ const ChatPage = () => {
           >
             <SearchChats />
           </Box>
-          <NotificationButton />
+          {/* <NotificationButton /> */}
           <Menu>
             <MenuButton as={Button} variant="ghost" colorScheme="blue" px={2}>
               <Flex align="center" gap={2}>

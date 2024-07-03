@@ -1,4 +1,4 @@
-const{ Schema,model } = require("mongoose");
+import { Schema, model } from 'mongoose';
 
 const messageSchema = new Schema({
     chat: {
@@ -16,8 +16,11 @@ const messageSchema = new Schema({
     },
 }, {
     timestamps: true
-})
+});
 
 const Message = model('Message', messageSchema);
 
-module.exports = Message;
+export {
+    messageSchema,
+    Message
+}

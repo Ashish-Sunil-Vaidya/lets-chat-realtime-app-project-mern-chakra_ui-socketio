@@ -7,7 +7,7 @@ import { useColorModeValue } from "@chakra-ui/react";
 
 const ChatBox = ({ fetchAgain, setFetchAgain }) => {
   const { selectedChat } = useChatContext();
-  const chatBoxBG = useColorModeValue("blue.50", "gray.900");
+  const chatBoxBG = useColorModeValue("white", "gray.900");
 
   return (
     <Box

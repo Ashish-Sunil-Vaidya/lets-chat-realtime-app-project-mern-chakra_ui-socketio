@@ -1,8 +1,8 @@
-const { verify } = require('jsonwebtoken');
-const User = require("../models/userModel");
-
+import jwt from 'jsonwebtoken';
+import {User} from "../models/userModel.js";
+const { verify } = jwt;
 // This function is used to protect the routes that require authentication before accessing them
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         try {
             const token = req.headers.authorization.split(" ")[1];
@@ -25,6 +25,4 @@ const protect = async (req, res, next) => {
             message: "Headers is not set"
         })
     }
-}
-
-module.exports = protect;
+};

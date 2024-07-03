@@ -1,21 +1,40 @@
-const { config } = require("dotenv");
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const userRouter = require("./routes/userRoutes.js");
-const chatRouter = require("./routes/chatRoutes.js");
-const messageRouter = require("./routes/messageRoutes.js");
-const { notFound, errorHandler } = require("./middlewares/APIErrors.js");
+import { config } from "dotenv";
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import userRouter from "./routes/userRoutes.js";
+import chatRouter from "./routes/chatRoutes.js";
+import messageRouter from "./routes/messageRoutes.js";
+import { notFound, errorHandler } from "./middlewares/APIErrors.js";
+import path from 'path';
+import { Server } from 'socket.io';
+import { fileURLToPath } from "url";
 
 config();
 
 const app = express();
+const __dirname1 = path.dirname(fileURLToPath(import.meta.url));
+const __dirname2 = path.join(__dirname1, '../');
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+
 app.use('/api/user', userRouter);
 app.use('/api/chats', chatRouter)
 app.use('/api/messages', messageRouter)
+
+// DEPLOYMENT CODE
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname2, '/frontend/dist')));
+    app.get('*', (req, res) => res.sendFile(path.resolve(__dirname2, 'frontend', 'dist', 'index.html')));
+}
+else {
+    app.get('/', (req, res) => {
+        res.send('API is running in dev mode');
+    });
+}
+
+
 
 // In Api testing throws custom url not found message 
 app.use(notFound);
@@ -37,20 +56,22 @@ const server = app.listen(process.env.PORT, () => {
     console.log('App listening on port: ', process.env.PORT);
 })
 
-// Socket IO
-const io = require('socket.io')(server, {
+// Socket IO initial setup
+
+const io = new Server(server, {
     pingTimeout: 60000,
     cors: {
-        origin: ['http://localhost:5173','https://q36lj4lq-5173.inc1.devtunnels.ms'],
+        origin: ['http://localhost:5173', 'https://q36lj4lq-5173.inc1.devtunnels.ms'],
     }
 });
 
 // Socket IO Connection
 io.on('connection', (socket) => {
-    console.log('===  Socket IO Connection Succesful [42] ===');
+    // console.log('===  Socket IO Connection Succesful [42] ===');
 
     socket.on('setup', (userData) => {
-        socket.join(userData.id);
+        socket.join(userData?.id);
+        console.log('=== userData index.js [54] ===', userData);
         socket.emit('connected');
     });
     socket.on('join chat', (room) => { socket.join(room); console.log('=== room index.js [55] ===', room); });
@@ -63,9 +84,13 @@ io.on('connection', (socket) => {
         });
     });
     socket.on('typing', (room) => {
-        socket.in(room).emit('typing');
+        socket.in(room.selectedChat ? room.selectedChat : room).emit('typing', room.selectedChat && room.typerName);
+        console.log('=== room index.js [67] ===', room);
     })
     socket.on('stop typing', (room) => {
         socket.in(room).emit('stop typing');
     })
+
 })
+
+export default app;

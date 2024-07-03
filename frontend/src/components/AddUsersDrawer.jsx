@@ -130,7 +130,7 @@ const AddUsersDrawer = () => {
                 py={3}
               >
                 {!loading &&
-                  searchResults &&
+                  searchResults&&
                   searchResults.map((user) => (
                     <UserListItem
                       key={user._id}

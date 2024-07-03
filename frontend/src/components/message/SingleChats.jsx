@@ -31,11 +31,20 @@ import ScrollableFeed from "react-scrollable-feed";
 import io from "socket.io-client";
 import { useColorModeValue } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
+import useColorTheme from "../../hooks/useColorTheme";
 
 const ENDPOINT = "http://localhost:5000";
 let socket, selectedChatCompare;
 const SingleChats = () => {
-  const { user, selectedChat,setSelectedChat } = useChatContext();
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    setNotifications,
+    notifications,
+    fetchAgain,
+    setFetchAgain,
+  } = useChatContext();
   const [messageInput, setMessageInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,23 +52,24 @@ const SingleChats = () => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [typing, setTyping] = useState(false);
-  const chatBoxHeaderFooterBG = useColorModeValue("blue.100", "gray.800");
-  const chatBoxHeaderFooterBorder = useColorModeValue("gray.300", "gray.500");
-  const typingBadgeBG = useColorModeValue("blue.500", "gray.600");
-  const inputBG = useColorModeValue("white", "gray.700");
+
+  const { chatBoxHeaderFooterBG, typingBadgeBG, inputBG } = useColorTheme();
+
   const toast = useToast();
 
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
-    socket.on("typing", () => setIsTyping(true));
+    socket.on("typing", () => {
+      setIsTyping(true);
+    });
     socket.on("stop typing", () => setIsTyping(false));
-    console.log("=== messages SingleChats.jsx [50] ===", messages);
+    // console.log("=== messages SingleChats.jsx [50] ===", messages);
   }, []);
 
-  const typingHandler = (inStream) => {
-    setMessageInput(inStream);
+  const typingHandler = (data) => {
+    setMessageInput(data);
     if (!socketConnected) return;
     if (!typing) {
       setTyping(true);
@@ -151,7 +161,11 @@ const SingleChats = () => {
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessage.chat._id
       ) {
-        // send notification
+        // if (!notifications.includes(newMessage)) {
+        //   setNotifications([newMessage, ...notifications]);
+        //   setFetchAgain(!fetchAgain);
+        // }
+        setFetchAgain(!fetchAgain);
       } else {
         setMessages([...messages, newMessage]);
       }
@@ -166,16 +180,23 @@ const SingleChats = () => {
           align="center"
           pl={3}
           bgColor={chatBoxHeaderFooterBG}
-          borderBottomWidth="2px"
+          borderBottomWidth="1px"
         >
           <Flex align="center" gap={3}>
             <IconButton
               display={{ base: "block", md: "none" }}
               variant="ghost"
               icon={<ArrowBackIcon boxSize={8} />}
-              onClick={() => setSelectedChat(null)}
+              onClick={() => {
+                setFetchAgain(!fetchAgain);
+                setSelectedChat(null);
+              }}
             />
-            <Avatar src={getSenderFull(user,selectedChat.users)?.profilePic} size="sm" />
+            
+            <Avatar
+              src={getSenderFull(user, selectedChat.users)?.profilePic}
+              size="sm"
+            />
             <Heading fontSize="1.3rem" textColor="blue.500" py={4}>
               {selectedChat && getSender(user, selectedChat.users)}
             </Heading>
@@ -217,7 +238,7 @@ const SingleChats = () => {
         </Grid>
       ) : (
         <ScrollableFeed>
-          {messages &&
+          {messages&&
             messages.map((message, index) => (
               <MessageBox
                 key={message._id}
@@ -229,6 +250,7 @@ const SingleChats = () => {
                 content={message.content}
                 senderUsername={message.sender.username}
                 profilePic={message.sender.profilePic}
+                isGroupChat={false}
               />
             ))}
         </ScrollableFeed>
@@ -237,7 +259,7 @@ const SingleChats = () => {
         <FormControl
           as={Flex}
           bgColor={chatBoxHeaderFooterBG}
-          
+          borderTopWidth="1px"
           p={3}
           align="center"
           gap={3}

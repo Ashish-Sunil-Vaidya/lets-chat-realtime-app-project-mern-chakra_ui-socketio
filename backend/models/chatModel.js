@@ -1,6 +1,6 @@
-const { Schema, model } = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const chatSchema = new Schema({
+export const chatSchema = new Schema({
     chatName: {
         type: String,
         required: true,
@@ -25,11 +25,10 @@ const chatSchema = new Schema({
     groupAdmin: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }
+    },
+    
 }, {
     timestamps: true
-})
+});
 
-const Chat = model('Chat', chatSchema);
-
-module.exports = Chat;
+export const Chat = model('Chat', chatSchema);

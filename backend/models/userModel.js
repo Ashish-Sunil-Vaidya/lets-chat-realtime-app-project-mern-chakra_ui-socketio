@@ -1,9 +1,8 @@
-const { Schema,model } = require("mongoose");
-const {genSalt,hash,compare} = require('bcryptjs');
+import { Schema, model } from "mongoose";
+import bcrpyt from 'bcryptjs';
+const { compare, genSalt, hash } = bcrpyt;
 
-
-
-const userSchema = new Schema({
+export const userSchema = new Schema({
     username: {
         type: String,
         required: true,
@@ -26,11 +25,11 @@ const userSchema = new Schema({
     },
 }, {
     timestamps: true
-})
+});
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
     return await compare(enteredPassword, this.password);
-}
+};
 
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
@@ -39,8 +38,6 @@ userSchema.pre('save', async function (next) {
     const salt = await genSalt(10);
     this.password = await hash(this.password, salt);
     next();
-})
+});
 
-const User = model('User', userSchema);
-
-module.exports = User;
+export const User = model('User', userSchema);

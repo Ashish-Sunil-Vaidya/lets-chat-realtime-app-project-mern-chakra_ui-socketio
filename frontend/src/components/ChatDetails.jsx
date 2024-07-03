@@ -47,17 +47,28 @@ export function ChatDetails({
           }
           boxShadow="outline"
         />
+        {/* {console.log("===  ChatDetails.jsx [50] ===", chat.latestMessage)} */}
         <Box>
-          <Text fontWeight="bold">
+          <Text fontWeight="bold" fontSize="1.1rem">
             {!chat.isGroupChat
               ? getSender(loggedInUser, chat.users)
               : chat.chatName}
           </Text>
-          <Text
-            fontSize="sm" // color={selectedChat === chat._id ? "white" : "gray.500"}
-          >
-            {chat.latestMessage?.content}
-          </Text>
+          {chat.latestMessage && (
+            <HStack
+              fontSize="sm" // color={selectedChat === chat._id ? "white" : "gray.500"}
+            >
+              {chat.latestMessage?.sender?.username ===
+              loggedInUser.username ? (
+                <Text fontWeight="bold">You:</Text>
+              ) : (
+                chat.isGroupChat && (
+                  <Text fontWeight="bold">{chat.latestMessage?.sender?.username}:</Text>
+                )
+              )}
+              <Text>{chat.latestMessage?.content}</Text>
+            </HStack>
+          )}
         </Box>
       </HStack>
     </Box>

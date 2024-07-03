@@ -116,8 +116,8 @@ const CreateGroupDrawer = () => {
     };
     const data = {
       name: groupChatName,
-      users: JSON.stringify(selectedUsers.map((u) => u._id)),
-      groupChatProfilePic: cloudinaryUrl,
+      users: selectedUsers&& JSON.stringify(selectedUsers.map((u) => u._id)),
+      groupChatProfilePic: cloudinaryUrl || null,
     };
     await axios
       .post("/api/chats/group", data, config)
@@ -137,7 +137,7 @@ const CreateGroupDrawer = () => {
         }
         toast({
           id: "toast",
-          title: err.response.data.message,
+          title: err.response.data,
           status: "warning",
         });
       })
@@ -176,10 +176,14 @@ const CreateGroupDrawer = () => {
                       setCloudinaryUrl(e.target.files[0]);
                       setUploaded(false);
                     }}
-                   display="none"
+                    display="none"
                   />
-                  
-                  {uploaded && <Link as={Button} href={cloudinaryUrl}>Preview</Link>}
+
+                  {uploaded && (
+                    <Link as={Button} href={cloudinaryUrl}>
+                      Preview
+                    </Link>
+                  )}
                 </Flex>
 
                 {avatar && !uploaded && (
@@ -235,53 +239,56 @@ const CreateGroupDrawer = () => {
                 </Flex>
               </Box>
               <VStack w="100%" h="100%" overflowY="auto" p={3} gap={3}>
-                {searchResults.map((user) => (
-                  <Flex
-                    key={user._id}
-                    p={3}
-                    justify="space-between"
-                    align="center"
-                    w="100%"
-                    rounded="md"
-                    sx={{
-                      bg: selectedUsers.includes(user) ? selectedUserBG : null,
-                    }}
-                  >
-                    <Flex align="center" gap={3}>
-                      <Avatar
-                        name={user.username}
-                        src={user.avatar}
-                        size="sm"
-                      />
-                      <Text>{user.username}</Text>
+                {searchResults&&
+                  searchResults.map((user) => (
+                    <Flex
+                      key={user._id}
+                      p={3}
+                      justify="space-between"
+                      align="center"
+                      w="100%"
+                      rounded="md"
+                      sx={{
+                        bg: selectedUsers.includes(user)
+                          ? selectedUserBG
+                          : null,
+                      }}
+                    >
+                      <Flex align="center" gap={3}>
+                        <Avatar
+                          name={user.username}
+                          src={user.avatar}
+                          size="sm"
+                        />
+                        <Text>{user.username}</Text>
+                      </Flex>
+                      {!selectedUsers.includes(user) ? (
+                        <Button
+                          colorScheme="blue"
+                          size="sm"
+                          onClick={() =>
+                            setSelectedUsers([...selectedUsers, user])
+                          }
+                          variant="ghost"
+                        >
+                          <AddIcon />
+                        </Button>
+                      ) : (
+                        <Button
+                          colorScheme="red"
+                          size="sm"
+                          onClick={() =>
+                            setSelectedUsers(
+                              selectedUsers.filter((u) => u !== user)
+                            )
+                          }
+                          variant="ghost"
+                        >
+                          <CloseIcon />
+                        </Button>
+                      )}
                     </Flex>
-                    {!selectedUsers.includes(user) ? (
-                      <Button
-                        colorScheme="blue"
-                        size="sm"
-                        onClick={() =>
-                          setSelectedUsers([...selectedUsers, user])
-                        }
-                        variant="ghost"
-                      >
-                        <AddIcon />
-                      </Button>
-                    ) : (
-                      <Button
-                        colorScheme="red"
-                        size="sm"
-                        onClick={() =>
-                          setSelectedUsers(
-                            selectedUsers.filter((u) => u !== user)
-                          )
-                        }
-                        variant="ghost"
-                      >
-                        <CloseIcon />
-                      </Button>
-                    )}
-                  </Flex>
-                ))}
+                  ))}
               </VStack>
             </Grid>
           </DrawerBody>

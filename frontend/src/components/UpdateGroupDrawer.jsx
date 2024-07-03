@@ -32,17 +32,25 @@ import axios from "axios";
 import { AddIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
 import { useColorModeValue } from "@chakra-ui/react";
 
-const UpdateGroupDrawer = ({ groupChatName, groupMembers,groupChatProfilePic }) => {
+const UpdateGroupDrawer = ({
+  groupChatName,
+  groupMembers,
+  groupChatProfilePic,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain } =
     useChatContext();
   const [groupChatNameInput, setGroupChatName] = useState(groupChatName || "");
-  const [selectedUsers, setSelectedUsers] = useState([]);
+
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const toast = useToast();
   const selectedUserBG = useColorModeValue("blue.50", "gray.600");
+  const [avatar, setAvatar] = useState("");
+  const [cloudinaryUrl, setCloudinaryUrl] = useState(groupChatProfilePic);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
 
   const handleSearch = async () => {
     if (toast.isActive("search-toast")) {
@@ -56,7 +64,7 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers,groupChatProfilePic }) 
         },
       };
       const { data } = await axios.get(`/api/user/?search=${search}`, config);
-      const gmid = groupMembers.map((u) => u._id);
+      const gmid = groupMembers && groupMembers.map((u) => u._id);
       setSearchResults(data.filter((u) => !gmid.includes(u._id)));
     } catch (error) {
       console.error(error);
@@ -103,6 +111,72 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers,groupChatProfilePic }) 
           status: "error",
         });
       });
+  };
+
+  const handleUpload = () => {
+    if (
+      ["image/jpeg", "image/png", "image/webp"].includes(cloudinaryUrl.type)
+    ) {
+      setUploadLoading(true);
+      const data = new FormData();
+      data.append("file", cloudinaryUrl);
+      data.append("upload_preset", "letschat");
+      data.append("cloud_name", "calmperson");
+      fetch("https://api.cloudinary.com/v1_1/calmperson/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          // console.log(data.url);
+          setCloudinaryUrl(data.url);
+
+          setUploadLoading(false);
+          setUploaded(true);
+          const config = {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+          };
+          axios
+            .put(
+              "/api/chats/updateProfilePic",
+              { chatId: selectedChat?._id, groupChatProfilePic: data.url },
+              config
+            )
+            .then(({ data }) => {
+              setSelectedChat(data);
+              setFetchAgain(!fetchAgain);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast({
+                title: err.message,
+                status: "error",
+              });
+              setUploadLoading(false);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            title: err.message,
+            status: "error",
+          });
+          setUploadLoading(false);
+        })
+        .finally(() => {
+          toast({
+            title: "Image Uploaded Successfully",
+            status: "success",
+          });
+        });
+    } else {
+      toast({
+        title: "Invalid File Format",
+        status: "error",
+      });
+    }
   };
 
   const handleRemove = async (mem) => {
@@ -173,7 +247,6 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers,groupChatProfilePic }) 
         });
       });
   };
-  
 
   return (
     <>
@@ -191,12 +264,64 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers,groupChatProfilePic }) 
           <DrawerHeader>
             <HStack justify="space-between">
               <Text>Edit</Text>
-              <Button mr={10}>Add Profile Picture</Button>
             </HStack>
           </DrawerHeader>
           <DrawerBody overflowY="auto">
             <Grid h="100%" spacing={1} templateRows="auto 1fr">
               <VStack>
+                <VStack>
+                  <Box position="relative" justify="center" h="100%">
+                    <Input
+                      type="file"
+                      position="absolute"
+                      opacity={0}
+                      w="100%"
+                      bgColor="red.100"
+                      h="100%"
+                      zIndex={999}
+                      onChange={(e) => {
+                        setAvatar(URL.createObjectURL(e.target.files[0]));
+                        setCloudinaryUrl(e.target.files[0]);
+                        setUploaded(false);
+                      }}
+                    />
+                    <Avatar
+                      boxSize="200px"
+                      name={groupChatName}
+                      src={avatar}
+                      size="xl"
+                      bg="blue.500"
+                    />
+                  </Box>
+                  {!avatar ? (
+                    <Text color="blue.200">
+                      Click anywhere around Avatar or Drag n Drop
+                    </Text>
+                  ) : (
+                    !uploaded && (
+                      <>
+                        <Button
+                          colorScheme="blue"
+                          onClick={handleUpload}
+                          isLoading={uploadLoading}
+                          loadingText="Uploading"
+                        >
+                          Upload
+                        </Button>
+                        <Button
+                          colorScheme="red"
+                          onClick={() => {
+                            setAvatar("");
+                            setCloudinaryUrl("");
+                            setUploaded(false);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </>
+                    )
+                  )}
+                </VStack>
                 <HStack w="100%" align="flex-end">
                   <InputField
                     label="Group Chat Name"
@@ -231,38 +356,40 @@ const UpdateGroupDrawer = ({ groupChatName, groupMembers,groupChatProfilePic }) 
               </VStack>
 
               <VStack w="100%" h="100%" overflowY="auto" p={3} gap={3}>
-                {groupMembers.map(
-                  (mem) =>
-                    mem._id !== selectedChat.groupAdmin._id && (
-                      <Flex
-                        key={mem._id}
-                        p={3}
-                        justify="space-between"
-                        align="center"
-                        w="100%"
-                        rounded="md"
-                        bg={selectedUserBG}
-                      >
-                        <Flex align="center" gap={3}>
-                          <Avatar
-                            name={mem.username}
-                            src={mem.profilePic}
-                            size="sm"
-                          />
-                          <Text>{mem.username}</Text>
-                        </Flex>
-                        <Button
-                          colorScheme="red"
-                          size="sm"
-                          onClick={() => handleRemove(mem)}
-                          variant="ghost"
+                {groupMembers&&
+                  groupMembers.map(
+                    (mem) =>
+                      mem._id !== selectedChat.groupAdmin._id && (
+                        <Flex
+                          key={mem._id}
+                          p={3}
+                          justify="space-between"
+                          align="center"
+                          w="100%"
+                          rounded="md"
+                          bg={selectedUserBG}
                         >
-                          <CloseIcon />
-                        </Button>
-                      </Flex>
-                    )
-                )}
+                          <Flex align="center" gap={3}>
+                            <Avatar
+                              name={mem.username}
+                              src={mem.profilePic}
+                              size="sm"
+                            />
+                            <Text>{mem.username}</Text>
+                          </Flex>
+                          <Button
+                            colorScheme="red"
+                            size="sm"
+                            onClick={() => handleRemove(mem)}
+                            variant="ghost"
+                          >
+                            <CloseIcon />
+                          </Button>
+                        </Flex>
+                      )
+                  )}
                 {!isLoading &&
+                  searchResults&&
                   searchResults.map((user) => (
                     <Flex
                       key={user._id}

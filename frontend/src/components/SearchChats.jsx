@@ -1,24 +1,20 @@
-import { Box, useColorModeValue } from "@chakra-ui/react";
-import InputField from "./InputField";
+import { Box, useColorModeValue, Input } from "@chakra-ui/react";
+
+import useChatContext from "../hooks/useChatContext";
 
 const SearchChats = () => {
- 
-  //   const chatBoxHeaderFooterBG = useColorModeValue("gray.100", "gray.700");
-  return (
-    <Box
-     
+  const { search, setSearch } = useChatContext();
+  
 
-      borderRadius="md"
-      //   borderBottomRightRadius="xl"
-      //   borderBottomColor={chatBoxHeaderFooterBG}
-      //   display={{ base: "none", md: "flex" }}
-    >
-      <InputField
+  return (
+    
+      <Input
         type="text"
         placeholder="Search for chats"
-        isRequired={false}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
       />
-    </Box>
+ 
   );
 };
 

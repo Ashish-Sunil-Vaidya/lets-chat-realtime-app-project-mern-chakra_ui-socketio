@@ -9,15 +9,20 @@ const ChatProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [fetchAgain, setFetchAgain] = useState(false);
-  const [notifications, setNotifications] = useState([]); 
+  const [notifications, setNotifications] = useState([]);
+  const [search, setSearch] = useState("");
+  const [deleteMode, setDeleteMode] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      console.log('=== user ChatProvider.jsx [16] ===', user);
       navigate("/chats");
     }
   }, []);
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("userDetails")));
+  }, [fetchAgain]);
 
   return (
     <ChatContext.Provider
@@ -32,6 +37,10 @@ const ChatProvider = ({ children }) => {
         setFetchAgain,
         notifications,
         setNotifications,
+        search,
+        setSearch,
+        deleteMode,
+        setDeleteMode,
       }}
     >
       {children}
