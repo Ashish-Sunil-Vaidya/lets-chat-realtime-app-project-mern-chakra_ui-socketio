@@ -30,7 +30,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import MessageBox from "./MessageBox";
 
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "https://lets-chat-a-minimalist-real-time-chat-app.onrender.com/";
 
 let socket;
 let selectedChatCompare;

@@ -33,7 +33,7 @@ import { useColorModeValue } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import useColorTheme from "../../hooks/useColorTheme";
 
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "https://lets-chat-a-minimalist-real-time-chat-app.onrender.com/";
 let socket, selectedChatCompare;
 const SingleChats = () => {
   const {
