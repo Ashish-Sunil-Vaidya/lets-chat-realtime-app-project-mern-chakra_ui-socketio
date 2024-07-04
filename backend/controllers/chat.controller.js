@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
-import { User } from '../models/userModel.js';
-import { Chat } from '../models/chatModel.js';
+import { User } from '../models/user.model.js';
+import { Chat } from '../models/chat.model.js';
 
 // function name: accessChat
 // Task: To access the chat between two users

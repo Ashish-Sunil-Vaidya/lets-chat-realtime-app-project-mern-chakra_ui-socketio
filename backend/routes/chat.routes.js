@@ -1,6 +1,6 @@
 import express from 'express';
-import { accessChat, fetchChats, createGroupChat, renameGroupChat, addToGroupChat, removefromGroupChat, updateProfilePic, deleteChats } from '../controllers/chatController.js';
-import {protect} from "../middlewares/auth.js";
+import { accessChat, fetchChats, createGroupChat, renameGroupChat, addToGroupChat, removefromGroupChat, updateProfilePic, deleteChats } from '../controllers/chat.controller.js';
+import {protect} from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 

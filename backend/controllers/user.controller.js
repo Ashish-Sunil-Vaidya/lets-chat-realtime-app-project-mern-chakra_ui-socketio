@@ -1,6 +1,6 @@
 import validator from "validator";
-import {User} from "../models/userModel.js";
-import {generateToken} from "../config/generateToken.js";
+import { User } from "../models/user.model.js";
+import { generateToken } from "../config/generateToken.js";
 import asyncHandler from "express-async-handler";
 const { isStrongPassword } = validator;
 
@@ -24,10 +24,11 @@ export const loginUser = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error("User does not exist");
     }
-
-    if (!user.matchPassword(password)) {
+    const isCorrectPassword = await user.matchPassword(password);
+    
+    if (!isCorrectPassword) {
         res.status(400);
-        throw new Error("Invalid credentials");
+        throw new Error("Password is incorrect");
     }
 
     const token = generateToken(user._id);

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import {User} from "../models/userModel.js";
+import {User} from "../models/user.model.js";
 const { verify } = jwt;
 // This function is used to protect the routes that require authentication before accessing them
 export const protect = async (req, res, next) => {

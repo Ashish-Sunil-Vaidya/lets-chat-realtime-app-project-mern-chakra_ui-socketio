@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
-import {Message} from "../models/messageModel.js";
-import {User} from "../models/userModel.js";
-import {Chat} from "../models/chatModel.js";
+import {Message} from "../models/message.model.js";
+import {User} from "../models/user.model.js";
+import {Chat} from "../models/chat.model.js";
 
 // function name: sendMessage
 // Task: To send a message in a chat

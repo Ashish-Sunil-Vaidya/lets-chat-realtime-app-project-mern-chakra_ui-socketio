@@ -15,7 +15,7 @@ import Signup from "./Signup";
 const AuthPage = () => {
   const bgColor = useColorModeValue("gray.100", "gray.700");
   return (
-    <Grid placeItems="center" h="100svh">
+    <Grid placeItems="center" h="100svh" w="100%">
       <Tabs
         display="flex"
         flexDirection="column"

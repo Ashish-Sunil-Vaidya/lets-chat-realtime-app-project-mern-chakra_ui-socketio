@@ -86,7 +86,7 @@ const Signup = () => {
   };
 
   return (
-    <HStack gap={3}>
+    <Flex direction={"column"} gap={3} >
       <VStack>
         <Box position="relative" justify="center" h="100%">
           <Input
@@ -183,7 +183,7 @@ const Signup = () => {
           Signup
         </Button>
       </Flex>
-    </HStack>
+    </Flex>
   );
 };
 
