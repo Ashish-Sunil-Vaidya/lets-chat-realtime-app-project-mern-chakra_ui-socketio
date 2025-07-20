@@ -7,10 +7,9 @@
     "frontend": "cd frontend && yarn",
     "backend": "cd backend && yarn",
     "dev": "concurrently \"yarn backend dev\" \"yarn frontend dev\"",
-    "install": "yarn frontend && yarn backend",
-    "start": "node backend/index.js",
-    "server": "nodemon backend/index.js",
-    "build": "npm install --legacy-peer-deps && npm install --legacy-peer-deps --prefix frontend && npm run build --prefix frontend"
+    "install": "concurrently \"yarn backend\" \"yarn frontend && yarn frontend build\"",
+    "start": "yarn backend start",
+    "server": "nodemon backend/index.js"
   },
   "devDependencies": {
     "concurrently": "8.2.2"
